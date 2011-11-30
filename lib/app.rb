@@ -7,7 +7,7 @@ use Rack::Session::Cookie
 
 get '/' do
   <<-HTML
-    <html><body>/</body></html>
+    <html><body>#{ENV['SALESFORCE_KEY']},#{ENV['SALESFORCE_SECRET']}</body></html>
     HTML
 end
 
