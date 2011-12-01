@@ -89,14 +89,11 @@ class QuickTest < Sinatra::Base
   end
 
   def start_authorization_url(environment = nil)
-    x = "/auth/salesforce#{sanitize_environment(environment)}"
-    puts "x = #{x}"
-    x
+    "/auth/salesforce#{sanitize_environment(environment)}"
   end
 
   def callback_url(environment = nil)
-    environment = sanitize_environment(environment)
-    "#{ENV['ORIGIN']}/auth/salesforce/callback"
+    "#{ENV['ORIGIN']}/auth/salesforce#{sanitize_environment(environment)}/callback"
   end
 
   def client(environment = nil)
