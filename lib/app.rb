@@ -75,5 +75,5 @@ def client
 end
 
 def redirect_uri
-  "http://localhost:4567/auth/salesforce/callback"
+  "#{ENV['ORIGIN']}/auth/salesforce/callback"
 end
