@@ -1,0 +1,27 @@
+%h3
+  You're authenticated yo!  (oauth is so cool...)
+%a{:href => "/unauthenticate"} Log out
+(from this app only, not salesforce.com)
+%h3 Some of your information
+%table
+  %tr
+    %td
+      %strong thumbnail:
+    %td
+      %img{:src => session[:salesforce][:thumbnail]}
+  %tr
+    %td
+      %strong username:
+    %td #{session[:salesforce][:username]}
+  %tr
+    %td
+      %strong instance_url:
+    %td #{session[:salesforce][:instance_url]}
+  %tr
+    %td
+      %strong user_id:
+    %td #{session[:salesforce][:user_id]}
+  %tr
+    %td
+      %strong organization_id:
+    %td #{session[:salesforce][:organization_id]}
