@@ -2,7 +2,7 @@ require "sinatra/base"
 require "oauth2"
 require "haml"
 
-class QuickTest < Sinatra::Base
+class OAuth2SalesforceExample < Sinatra::Base
 
   use Rack::Session::Cookie
 
@@ -24,9 +24,16 @@ class QuickTest < Sinatra::Base
   end
   
   post '/authenticate' do
-    puts "settings.clients: #{settings.clients}"
-    puts "params[:options]['environment']: #{params[:options]['environment']}"
-    redirect start_authorization_url(params[:options]['environment'])
+    environment = params[:options]['environment']
+    begin
+      redirect client(environment).auth_code.authorize_url(:redirect_uri => callback_url(environment),
+                                                           :display => params[:options]['display'],
+                                                           :immediate => params[:options]['immediate'],
+                                                           :scope => params[:options].to_a.flatten.keep_if{|v| v.start_with? "scope|"}.collect!{|v| v.sub(/scope\|/,"")}.join(" "))
+    rescue OAuth2::Error
+      #reformatting because Sinatra sees code property on OAuth2::Error and incorrectly assumes it should be an Integer
+      raise "#{$!.code},#{$!.description}"
+    end
   end
 
   get '/unauthenticate' do
@@ -34,16 +41,7 @@ class QuickTest < Sinatra::Base
     redirect '/'
   end
 
-  get '/auth/salesforce:environment' do |environment|
-    begin
-      redirect client(environment).auth_code.authorize_url(:redirect_uri => callback_url(environment))
-    rescue OAuth2::Error
-      #reformatting because Sinatra sees code property on OAuth2::Error and incorrectly assumes it should be an Integer
-      raise "#{$!.code},#{$!.description}"
-    end
-  end
-
-  get '/auth/salesforce-:environment/callback' do |environment|
+  get '/auth/salesforce:environment/callback' do |environment|
     begin
       access_token = client(environment).auth_code.get_token(params[:code], :redirect_uri => callback_url(environment))
       access_token.options[:mode] = :query
