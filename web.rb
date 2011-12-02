@@ -56,7 +56,7 @@ class OAuth2SalesforceExample < Sinatra::Base
                               :access_token   => access_token.token,
                               :user_id        => raw_info['user_id'],
                               :organization_id=> raw_info['organization_id'],
-                              :thumbnail      => raw_info['photos']['thumbnail'],
+                              :thumbnail      => raw_info['photos']['thumbnail'] + "?oauth_token=#{access_token.token}",
                               :username       => raw_info['username']}
       puts session[:salesforce]
     rescue OAuth2::Error
